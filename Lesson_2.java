@@ -55,14 +55,14 @@ private static int[] arr4 = {2,5,7,24,15,-7,0,8,4,18,1};
 private static int arrayMin(@NotNull int[] arr){
         int min=arr[0];
         for (int i = 0; i < arr.length; i++) {
-            min = arr[i] > min ? min : arr[i];
+            min = arr[i] > min ? min : arr[i]; //min = arr[i] > arr[min] ? min : i; если нам нужен индекс элемента
         }
 return min;
 }
 private static int arrayMax(@NotNull int[] arr){
         int max=arr[0];
         for (int i = 0; i < arr.length; i++) {
-            max = arr[i] > max ? arr[i] : max;
+            max = arr[i] > max ? arr[i] : max; // max = arr[i] > arr[max] ? i : max; если нам нужен индекс элемента
         }
         return max;
 }
