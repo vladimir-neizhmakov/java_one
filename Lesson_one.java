@@ -1,5 +1,8 @@
 package ru.geekbrains.java_one.lesson_1;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class Lesson_one {
 
     /*
@@ -46,6 +49,9 @@ public class Lesson_one {
     метод должен вернуть приветственное сообщение «Привет, переданное_имя!»;
     Вывести приветствие в консоль.
      */
+
+    @NotNull
+    @Contract(pure = true)
     private static String HiName(String a){
         return "Привет, " + a + "!";
     }
