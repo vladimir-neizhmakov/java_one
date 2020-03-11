@@ -73,9 +73,16 @@ public class Lesson_3 {
     private static void aiTurn() {
         int x;
         int y;
+        int[] blockY = new int[1];
         do {
-            x = RANDOM.nextInt(fieldSizeX);
-            y = RANDOM.nextInt(fieldSizeY);
+            blockY = blockValueY(DOT_HUMAN,symbolCount,1);
+            if (blockY[0]==-1 && blockY[1]==-1) {
+                x = RANDOM.nextInt(fieldSizeX);
+                y = RANDOM.nextInt(fieldSizeY);
+            } else {
+                y = blockY[0];
+                x = blockY[1];
+            }
         } while (!isEmptyCell(x, y));
         field[y][x] = DOT_AI;
 
@@ -89,14 +96,52 @@ public class Lesson_3 {
         }
         return true;
     }
-/*
+
     //проверяем необходимость блокировки по Y (строки)
-    private static int[] blockValueY(char c, int symbolCount, int hardLevel){
-        int[] blockY = new int[1];
-        int i;
-        boolean value=true;
+    private static int[] blockValueY(char c, int symbolCount, int hardLevel) {
+        int[] blockY = {-1,-1};
+        int i=0;
+        int y=0;
+        int x=0;
+        boolean value = true;
+        for (y = 0; y < fieldSizeY; y++) {
+            value = true;
+            for (x = 0; x < fieldSizeX - symbolCount + 1; x++) {
+                value = true;
+                for (i = 0; i < symbolCount-hardLevel; i++) {
+                    value = value && field[y][i + x] == c;
+                }
+                if (value) {
+                    if ((i+x+1 <= fieldSizeX) && (field[y][i + x + 1] == DOT_EMPTY)) {
+                        blockY[0] = y;
+                        blockY[1] = i + x + 1;
+                        return blockY;
+                    }
+                    if ((i+x-symbolCount-1 >= 0) && (field[y][i + x - symbolCount-1] == DOT_EMPTY)) {
+                        blockY[0] = y;
+                        blockY[1] = i + x - symbolCount-1;
+                        return blockY;
+                    }
+                }
 
+            }
+            if (value) {
+                if ((i+x+1 <= fieldSizeX) && (field[y][i + x + 1] == DOT_EMPTY)) {
+                    blockY[0] = y;
+                    blockY[1] = i + x + 1;
+                    return blockY;
+                }
+                if ((i+x-symbolCount-1 >= 0) && (field[y][i + x - symbolCount-1] == DOT_EMPTY)) {
+                    blockY[0] = y;
+                    blockY[1] = i + x - symbolCount-1;
+                    return blockY;
+                }
+            }
 
+        }
+        return blockY;
+    }
+/*
         for (int y = 0; y < fieldSizeY; y++) {
             value=true;
             for (i = 0; i < symbolCount-hardLevel; i++) {
