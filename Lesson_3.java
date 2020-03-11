@@ -89,15 +89,50 @@ public class Lesson_3 {
         }
         return true;
     }
+/*
+    //проверяем необходимость блокировки по Y (строки)
+    private static int[] blockValueY(char c, int symbolCount, int hardLevel){
+        int[] blockY = new int[1];
+        int i;
+        boolean value=true;
 
+
+        for (int y = 0; y < fieldSizeY; y++) {
+            value=true;
+            for (i = 0; i < symbolCount-hardLevel; i++) {
+                value = value && field[y][i] == c;
+            }
+            if (value) {
+                if ((i<symbolCount) && (field[y][i+1] == DOT_EMPTY)){
+                    blockY[0]=y;
+                    blockY[1]=i+1;
+                    return blockY;
+                }
+                if ((y>0) && (field[y-1][i] == DOT_EMPTY)){
+                    blockY[0]=y-1;
+                    blockY[1]=i;
+                    return blockY;
+                }
+
+            }
+        }
+
+
+        return value;
+    }
+*/
 
     //проверяем есть ли последовательность количества символов по Y (строки)
     private static boolean checkValueY(char c){
         boolean value=true;
         for (int y = 0; y < fieldSizeY; y++) {
             value=true;
-            for (int i = 0; i < symbolCount; i++) {
-                value = value && field[y][i] == c;
+            for (int x = 0; x < fieldSizeX - symbolCount+1 ; x++) {
+                value=true;
+                for (int i = 0; i < symbolCount; i++) {
+                    value = value && field[y][i+x] == c;
+                }
+                if (value) return value;
             }
             if (value) return value;
         }
@@ -109,8 +144,13 @@ public class Lesson_3 {
         boolean value=true;
         for (int x = 0; x < fieldSizeX; x++) {
             value=true;
-            for (int i = 0; i < symbolCount; i++) {
-                value = value && field[i][x] == c;
+            for (int y = 0; y < fieldSizeY - symbolCount+1; y++) {
+                value=true;
+                for (int i = 0; i < symbolCount; i++) {
+                    int a=i+y;
+                    value = value && field[a][x] == c;
+                }
+                if (value) return value;
             }
             if (value) return value;
         }
