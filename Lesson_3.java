@@ -125,15 +125,10 @@ public class Lesson_3 {
             for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
                 value=true;
                 for (int i = 0; i < symbolCount ; i++) {
-                    //  int a=i+y;
-                    //  int b=i+x;
                     value = value && field[i+y][i+x]==c;
-                    //System.out.println("[" + a + "][" + b + "] " + value);
                 }
-                //System.out.println("------");
                 if (value) return value;
             }
-            //System.out.println("------");
             if (value) return value;
         }
         return value;
@@ -147,42 +142,21 @@ public class Lesson_3 {
             for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
                 value=true;
                 for (int i = 0; i < symbolCount ; i++) {
-                    //int a=i+y;
-                    //int b=fieldSizeX-i-x-1;
-
                     value = value && field[i+y][fieldSizeX-i-x-1]==c;
-                  //  System.out.println("[" + a + "][" + b + "] " + value);
                 }
-                // System.out.println("------");
                 if (value) return value;
             }
-            // System.out.println("------");
             if (value) return value;
         }
         return value;
     }
 
     private static boolean checkWin(char c) {
-
-
         if (checkValueY(c)) return true;
         if (checkValueX(c)) return true;
         if (checkValueDiagLeft(c)) return true;
         if (checkValueDiagRight(c)) return true;
 
-/*
-        if (field[0][0] == c && field[0][1] == c && field[0][2] == c) return true;
-        if (field[1][0] == c && field[1][1] == c && field[1][2] == c) return true;
-        if (field[2][0] == c && field[2][1] == c && field[2][2] == c) return true;
-
-        if (field[0][0] == c && field[1][0] == c && field[2][0] == c) return true;
-        if (field[0][1] == c && field[1][1] == c && field[2][1] == c) return true;
-        if (field[0][2] == c && field[1][2] == c && field[2][2] == c) return true;
-
-
-        if (field[0][0] == c && field[1][1] == c && field[2][2] == c) return true;
-        if (field[0][2] == c && field[1][1] == c && field[2][0] == c) return true;
-*/
         return false;
     }
 
