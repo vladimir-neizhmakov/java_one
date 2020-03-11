@@ -1,5 +1,7 @@
 package ru.geekbrains.java_one.lesson_1;
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -118,15 +120,20 @@ public class Lesson_3 {
     //проверяем последовательность количества символов по диагоналям Left
     private static boolean checkValueDiagLeft(char c){
         boolean value=true;
-        for (int y = 0; y < fieldSizeY-symbolCount ; y++) {
+        for (int y = 0; y < fieldSizeY-symbolCount+1 ; y++) {
             value=true;
-            for (int x = 0; x < fieldSizeX-symbolCount; x++) {
+            for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
                 value=true;
                 for (int i = 0; i < symbolCount ; i++) {
+                    //  int a=i+y;
+                    //  int b=i+x;
                     value = value && field[i+y][i+x]==c;
+                    //System.out.println("[" + a + "][" + b + "] " + value);
                 }
+                //System.out.println("------");
                 if (value) return value;
             }
+            //System.out.println("------");
             if (value) return value;
         }
         return value;
@@ -135,19 +142,24 @@ public class Lesson_3 {
     //проверяем последовательность количества символов по диагоналям Right
     private static boolean checkValueDiagRight(char c){
         boolean value=true;
-        for (int y = 0; y < fieldSizeY-symbolCount ; y++) {
+        for (int y = 0; y < fieldSizeY-symbolCount+1; y++) {
             value=true;
-            for (int x = 0; x < fieldSizeX-symbolCount; x++) {
+            for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
                 value=true;
                 for (int i = 0; i < symbolCount ; i++) {
-                    value = value && field[i+y][field.length-1-i-x]==c;
+                    //int a=i+y;
+                    //int b=fieldSizeX-i-x-1;
+
+                    value = value && field[i+y][fieldSizeX-i-x-1]==c;
+                  //  System.out.println("[" + a + "][" + b + "] " + value);
                 }
+                // System.out.println("------");
                 if (value) return value;
             }
+            // System.out.println("------");
             if (value) return value;
         }
         return value;
-
     }
 
     private static boolean checkWin(char c) {
