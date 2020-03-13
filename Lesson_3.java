@@ -1,0 +1,284 @@
+package ru.geekbrains.java_one.lesson_1;
+
+import org.w3c.dom.ls.LSOutput;
+
+import java.util.Random;
+import java.util.Scanner;
+
+public class Lesson_3 {
+    private static final char DOT_HUMAN = 'X';
+    private static final char DOT_AI = 'O';
+    private static final char DOT_EMPTY = '_';
+
+    private static int fieldSizeX;
+    private static int fieldSizeY;
+    private static int symbolCount; // добавил переменную количества подряд идущих символов
+    private static char[][] field;
+
+    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Random RANDOM = new Random();
+
+    //добавил метод инициализации игры
+    private static void initGame() {
+        do {
+            System.out.println("Введите размер игрового поля X на Y и количество подряд идущих символов Z (1 < Z <= X,Y) через пробел >>> X Y Z >>> ");
+            fieldSizeX = SCANNER.nextInt();
+            fieldSizeY = SCANNER.nextInt();
+            symbolCount = SCANNER.nextInt();
+            if ((symbolCount > fieldSizeX) || (symbolCount > fieldSizeY)) System.out.println("Количество подряд идущих символов не может быть больше размера игрового поля, повторите ввод");
+            if (symbolCount <= 1) System.out.println("Количество подряд идущих символов не может быть меньше или равна 1");
+        } while ((symbolCount > fieldSizeX) || (symbolCount > fieldSizeY) || (symbolCount <= 1));
+    }
+
+    private static void initField() {
+//        fieldSizeY = 3;
+//        fieldSizeX = 3;
+        field = new char[fieldSizeY][fieldSizeX];
+        for (int y = 0; y < fieldSizeY; y++) {
+            for (int x = 0; x < fieldSizeX; x++) {
+                field[y][x] = DOT_EMPTY;
+            }
+        }
+    }
+
+    private static void printField() {
+        System.out.println("------");
+        for (int y = 0; y < fieldSizeY; y++) {
+            for (int x = 0; x < fieldSizeX; x++) {
+                System.out.print(field[y][x] + "|");
+            }
+            System.out.println();
+        }
+    }
+
+    private static boolean isValidCell(int x, int y) {
+        return x >= 0 && x < fieldSizeX && y >=0 && y < fieldSizeY;
+    }
+
+    private static boolean isEmptyCell(int x, int y) {
+        return field[y][x] == DOT_EMPTY;
+    }
+
+    private static void humanTurn() {
+        int x;
+        int y;
+        do {
+            System.out.println("Введите координаты хода X и Y (от 1 до 3) через пробел >>> ");
+            x = SCANNER.nextInt() - 1;
+            y = SCANNER.nextInt() - 1;
+        } while (!isValidCell(x, y) || !isEmptyCell(x, y));
+        field[y][x] = DOT_HUMAN;
+    }
+
+    private static void aiTurn() {
+        int x;
+        int y;
+        int[] blockY = new int[1];
+        do {
+            blockY = blockValueY(DOT_HUMAN,symbolCount,1);
+            if (blockY[0]==-1 && blockY[1]==-1) {
+                x = RANDOM.nextInt(fieldSizeX);
+                y = RANDOM.nextInt(fieldSizeY);
+            } else {
+                y = blockY[0];
+                x = blockY[1];
+            }
+        } while (!isEmptyCell(x, y));
+        field[y][x] = DOT_AI;
+
+    }
+
+    private static boolean isFieldFull() {
+        for (int y = 0; y < fieldSizeY; y++) {
+            for (int x = 0; x < fieldSizeX; x++) {
+                if (field[y][x] == DOT_EMPTY) return false;
+            }
+        }
+        return true;
+    }
+
+    //проверяем необходимость блокировки по Y (строки)
+    private static int[] blockValueY(char c, int symbolCount, int hardLevel) {
+        int[] blockY = {-1,-1};
+        int i=0;
+        int y=0;
+        int x=0;
+        boolean value = true;
+        for (y = 0; y < fieldSizeY; y++) {
+            value = true;
+            for (x = 0; x < fieldSizeX - symbolCount + 1; x++) {
+                value = true;
+                for (i = 0; i < symbolCount-hardLevel; i++) {
+                    value = value && field[y][i + x] == c;
+                }
+                if (value) {
+                    if ((i+x+1 <= fieldSizeX) && (field[y][i + x + 1] == DOT_EMPTY)) {
+                        blockY[0] = y;
+                        blockY[1] = i + x + 1;
+                        return blockY;
+                    }
+                    if ((i+x-symbolCount-1 >= 0) && (field[y][i + x - symbolCount-1] == DOT_EMPTY)) {
+                        blockY[0] = y;
+                        blockY[1] = i + x - symbolCount-1;
+                        return blockY;
+                    }
+                }
+
+            }
+            if (value) {
+                if ((i+x+1 <= fieldSizeX) && (field[y][i + x + 1] == DOT_EMPTY)) {
+                    blockY[0] = y;
+                    blockY[1] = i + x + 1;
+                    return blockY;
+                }
+                if ((i+x-symbolCount-1 >= 0) && (field[y][i + x - symbolCount-1] == DOT_EMPTY)) {
+                    blockY[0] = y;
+                    blockY[1] = i + x - symbolCount-1;
+                    return blockY;
+                }
+            }
+
+        }
+        return blockY;
+    }
+/*
+        for (int y = 0; y < fieldSizeY; y++) {
+            value=true;
+            for (i = 0; i < symbolCount-hardLevel; i++) {
+                value = value && field[y][i] == c;
+            }
+            if (value) {
+                if ((i<symbolCount) && (field[y][i+1] == DOT_EMPTY)){
+                    blockY[0]=y;
+                    blockY[1]=i+1;
+                    return blockY;
+                }
+                if ((y>0) && (field[y-1][i] == DOT_EMPTY)){
+                    blockY[0]=y-1;
+                    blockY[1]=i;
+                    return blockY;
+                }
+
+            }
+        }
+
+
+        return value;
+    }
+*/
+
+    //проверяем есть ли последовательность количества символов по Y (строки)
+    private static boolean checkValueY(char c){
+        boolean value=true;
+        for (int y = 0; y < fieldSizeY; y++) {
+            value=true;
+            for (int x = 0; x < fieldSizeX - symbolCount+1 ; x++) {
+                value=true;
+                for (int i = 0; i < symbolCount; i++) {
+                    value = value && field[y][i+x] == c;
+                }
+                if (value) return value;
+            }
+            if (value) return value;
+        }
+        return value;
+    }
+
+    //проверяем есть ли последовательность количества символов по X (столбцы)
+    private static boolean checkValueX(char c){
+        boolean value=true;
+        for (int x = 0; x < fieldSizeX; x++) {
+            value=true;
+            for (int y = 0; y < fieldSizeY - symbolCount+1; y++) {
+                value=true;
+                for (int i = 0; i < symbolCount; i++) {
+                    int a=i+y;
+                    value = value && field[a][x] == c;
+                }
+                if (value) return value;
+            }
+            if (value) return value;
+        }
+        return value;
+    }
+
+    //проверяем последовательность количества символов по диагоналям Left
+    private static boolean checkValueDiagLeft(char c){
+        boolean value=true;
+        for (int y = 0; y < fieldSizeY-symbolCount+1 ; y++) {
+            value=true;
+            for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
+                value=true;
+                for (int i = 0; i < symbolCount ; i++) {
+                    value = value && field[i+y][i+x]==c;
+                }
+                if (value) return value;
+            }
+            if (value) return value;
+        }
+        return value;
+    }
+
+    //проверяем последовательность количества символов по диагоналям Right
+    private static boolean checkValueDiagRight(char c){
+        boolean value=true;
+        for (int y = 0; y < fieldSizeY-symbolCount+1; y++) {
+            value=true;
+            for (int x = 0; x < fieldSizeX-symbolCount+1; x++) {
+                value=true;
+                for (int i = 0; i < symbolCount ; i++) {
+                    value = value && field[i+y][fieldSizeX-i-x-1]==c;
+                }
+                if (value) return value;
+            }
+            if (value) return value;
+        }
+        return value;
+    }
+
+    private static boolean checkWin(char c) {
+        if (checkValueY(c)) return true;
+        if (checkValueX(c)) return true;
+        if (checkValueDiagLeft(c)) return true;
+        if (checkValueDiagRight(c)) return true;
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+//        while (true) {
+        playOneRound();
+//            System.out.println("Play again?");
+//            if (SCANNER.next().equals("no"))
+//                break;
+//        }
+    }
+
+    private static void playOneRound() {
+        initGame();
+        initField();
+        printField();
+        while (true) {
+            humanTurn();
+            printField();
+            if (checkWin(DOT_HUMAN)) {
+                System.out.println("Выиграл игрок!");
+                break;
+            }
+            if (isFieldFull()) {
+                System.out.println("Ничья!");
+                break;
+            }
+            aiTurn();
+            printField();
+            if (checkWin(DOT_AI)) {
+                System.out.println("Выиграл компьютер!");
+                break;
+            }
+            if (isFieldFull()) {
+                System.out.println("Ничья!");
+                break;
+            }
+        }
+    }
+}
